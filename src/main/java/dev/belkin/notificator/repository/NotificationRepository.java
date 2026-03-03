@@ -19,8 +19,10 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
             SELECT n FROM NotificationEntity n
             WHERE n.changeUserId = :userId
             AND n.status = :status
+            AND (:idsList IS NULL OR n.id IN :idsList)
             """)
     List<NotificationEntity> findAllNotificationNotRead(@Param("userId") Integer userId,
+                                                        @Param("idsList") List<Integer> notificationIds,
                                                         @Param("status") String status);
 
 

@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -58,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<Integer> changeStatusNotification() {
+    public List<Integer> changeStatusNotification(List<Integer> notificationIds) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer userId;
@@ -68,10 +69,11 @@ public class NotificationServiceImpl implements NotificationService {
         }
         userId = (Integer) authentication.getPrincipal();
 
-        List<NotificationEntity> entities = notificationRepository.findAllNotificationNotRead(userId,
+        List<NotificationEntity> entities = notificationRepository.findAllNotificationNotRead(userId, notificationIds,
                 NotificationStatus.UNREAD.toString());
 
         List<Integer> idsList = entities.stream()
+                .filter(Objects::nonNull)
                 .map(NotificationEntity::getId)
                 .toList();
 
